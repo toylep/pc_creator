@@ -1,5 +1,5 @@
 DOCKER_COMP = docker compose -f docker-compose.yml
-MANAGER = $(DOCKER_COMP) exec django python task_manager/manage.py
+MANAGER = $(DOCKER_COMP) exec django python manage.py
 up:
 	@$(DOCKER_COMP) up --detach --wait
 
