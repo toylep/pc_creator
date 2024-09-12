@@ -65,6 +65,6 @@ class Configuration(models.Model):
 
     cpu = models.ForeignKey(BaseCPU, on_delete=models.CASCADE)
     gpu = models.ForeignKey(BaseGPU, on_delete=models.CASCADE, null=True)
-    motherboard = models.ForBaseeignKey(BaseMotherBoard, on_delete=models.CASCADE)
+    motherboard = models.ForeignKey(BaseMotherBoard, on_delete=models.CASCADE)
     ram = models.ForeignKey(BaseRAM, on_delete=models.CASCADE)
     power_unit = models.ForeignKey(BasePowerUnit, on_delete=models.CASCADE)
