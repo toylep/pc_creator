@@ -1,3 +1,4 @@
 .env
 servers.json
 pc-venv
+**/__pycache__

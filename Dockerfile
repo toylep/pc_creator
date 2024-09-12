@@ -25,12 +25,11 @@ RUN echo "PermitEmptyPasswords yes" >> /etc/ssh/sshd_config
 
 COPY ./pc_builder2 /srv/app
 
-WORKDIR /srv/app
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
-RUN python -m venv /srv/app/.venv
-ENV PATH="/srv/app/.venv/bin:$PATH"
+WORKDIR /srv/app
 RUN pip install uv
 
-RUN pwd
 
 RUN uv pip install -r /srv/app/requirements.txt

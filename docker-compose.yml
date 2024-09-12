@@ -7,8 +7,13 @@ services:
     # Задание имени контейнера для сервиса django
     container_name: pc_builder
     # Задание команды, которую нужно запустить при запуске контейнера для сервиса django
-    command: bash -c "service ssh start && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "service ssh start && ls -a && python manage.py runserver 0.0.0.0:8000"
     # Открытие порта на хостовой машине и перенаправление на порт в контейнере
+    volumes:
+      - ./pc_builder2/:/srv/app/
+      - ./.env:/srv/app/.env
+    networks:
+      - default
     ports:
       - '8000:8000'
       - '22:22'
@@ -19,9 +24,14 @@ services:
   postgres:
     # Использование готового образа postgres
     image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /data/postgres
+      POSTGRES_DB: ${POSTGRES_DB}
     # Задание переменных окружения для контейнера с postgres
-    env_file:
-      - ./.env
+    networks:
+      - default
      # Задание имени контейнера для сервиса pgdb
     container_name: postgres
      # Связывание тома с директорией в контейнере для сохранения данных postgres
@@ -45,3 +55,7 @@ services:
 
 volumes:
   pgdbdata: null
+
+networks:
+  default:
+    driver: bridge
