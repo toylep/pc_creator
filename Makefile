@@ -1,7 +1,12 @@
 DOCKER_COMP = docker compose -f docker-compose.yml
 MANAGER = $(DOCKER_COMP) exec django python manage.py
+# celery -A pc_builder worker --loglevel=INFO --max-tasks-per-child 1 --autoscale=3,1 -Q ${CELERY_QUEUE_UPLOAD},
+
 up:
 	@$(DOCKER_COMP) up --detach --wait
+
+build:
+	@$(DOCKER_COMP) up --build
 
 down:
 	@$(DOCKER_COMP) down --remove-orphans
