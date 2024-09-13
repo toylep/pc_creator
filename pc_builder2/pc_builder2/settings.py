@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "calculator",
     "rest_framework",
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -77,6 +78,18 @@ DATABASES = {
     }
 }
 
+REST_FRAMEWORK = {
+    # YOUR SETTINGS
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'PC Builder API',
+    'DESCRIPTION': 'Диплом делаем',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    "SCHEMA_PATH_PREFIX": "/api",
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
