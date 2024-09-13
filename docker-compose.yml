@@ -52,7 +52,7 @@ services:
     # Задание имени контейнера для сервиса django
     container_name: pc_builder_celery
     # Задание команды, которую нужно запустить при запуске контейнера для сервиса django
-    command: bash -c "echo 123"
+    command: bash -c "service ssh start && uv run celery -A pc_builder2 worker --loglevel=INFO "
     
     # Открытие порта на хостовой машине и перенаправление на порт в контейнере
     volumes:
