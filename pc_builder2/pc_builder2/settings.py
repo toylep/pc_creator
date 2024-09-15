@@ -118,9 +118,10 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_REDIS_URL')
+CELERY_TIMEZONE = "Russia/Irkutsk"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
 
 STATIC_URL = "static/"
 
