@@ -5,7 +5,7 @@ services:
     # Сборка образа для сервиса django из текущей директории
     build: .
     # Задание имени контейнера для сервиса django
-    container_name: pc_builder
+    container_name: pc_builder_back
     # Задание команды, которую нужно запустить при запуске контейнера для сервиса django
     command: bash -c "service ssh start && ls -a && python manage.py runserver 0.0.0.0:8000"
     # Открытие порта на хостовой машине и перенаправление на порт в контейнере
@@ -33,11 +33,55 @@ services:
     networks:
       - default
      # Задание имени контейнера для сервиса pgdb
-    container_name: postgres
+    container_name: pc_builder_postgres
      # Связывание тома с директорией в контейнере для сохранения данных postgres
     volumes:
-      - pgdbdata:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data/
 
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+      start_period: 2s
+      interval: 3s
+      timeout: 2s
+      retries: 15
+    restart: unless-stopped
+
+  celery:
+    # Сборка образа для сервиса django из текущей директории
+    build: .
+    # Задание имени контейнера для сервиса django
+    container_name: pc_builder_celery
+    # Задание команды, которую нужно запустить при запуске контейнера для сервиса django
+    command: bash -c "service ssh start && uv run celery -A pc_builder2 worker --loglevel=INFO "
+    
+    # Открытие порта на хостовой машине и перенаправление на порт в контейнере
+    volumes:
+      - ./pc_builder2/:/srv/app/
+      - ./.env:/srv/app/.env
+    networks:
+      - default
+    # Зависимость от другого сервиса
+    depends_on:
+      - postgres
+
+  redis:
+    container_name: pc_builder_redis
+    image: docker.io/bitnami/redis:6.2
+    networks:
+        - default
+    env_file:
+      - ./.env
+    ports:
+        - '${REDIS_OUT_PORT}:${REDIS_IN_PORT}'
+    volumes:
+      - redis_data:/bitnami/redis/data
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli -a $REDIS_PASSWORD ping | grep PONG" ]
+      start_period: 2s
+      interval: 1s
+      timeout: 2s
+      retries: 15
+    restart: unless-stopped
 
   pgadmin:
     image: dpage/pgadmin4
@@ -53,8 +97,14 @@ services:
     volumes:
       - ./servers.json:/pgadmin4/servers.json
 
+
 volumes:
-  pgdbdata: null
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  redis_data:
+    driver: local
 
 networks:
   default:
