@@ -7,8 +7,8 @@ class BaseGPU(models.Model):
     """Видеокарта"""
 
     short_name = models.CharField(max_length=100,verbose_name="Сокращенное название")
-    perfomance_index = models.FloatField()
-    tdp = models.IntegerField()
+    perfomance_index = models.FloatField(verbose_name="Индекс производительности")
+    tdp = models.IntegerField(verbose_name="Пакет тепловыделения")
 
 
 class BaseCPU(models.Model):
