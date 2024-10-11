@@ -1,40 +1,24 @@
+from django.db.models.base import Model as Model
 import requests
-from bs4 import BeautifulSoup
 from utils.abstract_parser import AbstractRequestParser
-class TechCityParser(AbstractRequestParser):
+from calculator.models import BaseGPU
+class TechCityGPUParser(AbstractRequestParser):
     """
     Парсер tech city для получения
     базовых данных о комплектующих и индкексах производительности
     """
     url: str = "https://technical.city/ru/video/rating?pg=1&sort_field=type&sort_order=up&ajax=1"
-
-
+    model = BaseGPU
     
-    def validate(self):
+    def divide_data(self):
+        self.soup_data = self.soup_data.find_all('tr')
         
-
-
-
-
-
-
-
-
-        return 
     def extraction(self):
-
-        response = self.parse()
-
-        soup = BeautifulSoup(response, 'html.parser')
-        # считываем заголовок страницы
-        
-        cards = soup.find_all('tr') # Поиск карточек видеокарт
-        
         card_list = []
-
-        for card in cards:
-                
+        for card in self.soup_data:
+            if card is not None and card.has_attr('data-id'):
                 cells = card.find_all('td')
+
                 name = cells[1].find('a')
                 performance = cells[3]
                 power = cells[6]
@@ -45,23 +29,20 @@ class TechCityParser(AbstractRequestParser):
                     or power is None
                     ):
                     continue
-                
+
                 name = name.text.strip() 
                 performance = performance.text.strip() 
+
                 power = power.text.strip()[:-2] 
-
-
-                card_json={
-                    "name":name,
-                    "performance":performance,
-                    "power": int(power)
+                try:
+                    power = int(power)    
+                except ValueError:
+                    power = None
+                card ={
+                    "short_name": name,
+                    "perfomance_index":performance,
+                    "tdp": power
                 }
-                print(card_json)
-                card_list.append(card_json)
-            
-            
-
-       
-        # print(type(cards))
-
-        return card_list
+                card_list.append(card)   
+        
+        return card_list    
