@@ -7,17 +7,18 @@ class BaseGPU(models.Model):
     """Видеокарта"""
 
     short_name = models.CharField(max_length=100,verbose_name="Сокращенное название")
-    perfomance_index = models.FloatField()
-    tdp = models.IntegerField()
+    perfomance_index = models.FloatField(verbose_name="Индекс производительности")
+    tdp = models.IntegerField(verbose_name="Пакет тепловыделения", null=True)
 
 
 class BaseCPU(models.Model):
     """Процессор"""
 
-    name = models.CharField(max_length=100)
-    perfomance_index = models.FloatField()
-    socket = models.IntegerField()
-    is_graphics = models.BooleanField()
+    name = models.CharField(max_length=100,verbose_name="Сокращенное название")
+    perfomance_index = models.FloatField(verbose_name="Индекс производительности")
+    socket = models.CharField(verbose_name="Сокет")
+    is_graphics = models.BooleanField(verbose_name="Сокращенное название",null=True)
+    tdp = models.IntegerField(verbose_name="Пакет тепловыделения", null=True)
 
 
 class BaseMotherBoard(models.Model):

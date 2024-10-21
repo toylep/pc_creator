@@ -24,6 +24,5 @@ logs:
 	@$(DOCKER_COMP) logs $(name) --tail=0 --follow
 
 update:
-	@pwd
 	@pip freeze > ./pc_builder2/requirements.txt
 	@$(DOCKER_COMP) exec django uv pip install -r ./requirements.txt

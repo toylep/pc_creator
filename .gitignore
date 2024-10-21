@@ -3,3 +3,4 @@ servers.json
 pc-venv
 **/__pycache__/** 
 *.pyc
+venv
